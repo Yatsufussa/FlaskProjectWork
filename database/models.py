@@ -1,0 +1,67 @@
+from flask_sqlalchemy import SQLAlchemy
+
+# создаем объект базы данных
+db = SQLAlchemy()
+
+# User Table
+class User(db.Model):
+    __tablename__ = 'users'
+    user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    detachment = db.Column(db.Integer, nullable=False)
+    first_name = db.Column(db.String)
+    last_name = db.Column(db.String)
+    email = db.Column(db.String, nullable=False)
+    birthday = db.Column(db.Date, nullable=False)
+    reg_date = db.Column(db.DateTime)
+
+
+# Passwords Table
+class Password(db.Model):
+    __tablename__ = 'user_passwords'
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), primary_key=True)
+    password = db.Column(db.String, nullable=False)
+    user_fk = db.relationship(User)
+
+
+# Photo Table
+class PostPhoto(db.Model):
+    __tablename__ = 'user_photos'
+    photo_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    photo_path = db.Column(db.String, nullable=False)
+
+    user_fk = db.relationship(User)
+
+
+# Post Table
+class Post(db.Model):
+    __tablename__ = 'user_post'
+    post_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+    photo_id = db.Column(db.Integer, db.ForeignKey('user_photos.photo_id'), nullable=False)
+    post_text = db.Column(db.String, nullable=True)
+    post_date = db.Column(db.DateTime)
+    user_fk = db.relationship(User)
+    photo_fk = db.relationship(PostPhoto)
+
+
+# Service Category Table
+class PostComment(db.Model):
+    __tablename__ = 'post_comments'
+    comment_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    post_id = db.Column(db.Integer, db.ForeignKey('user_post.post_id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'), nullable=False)
+
+    comment_text = db.Column(db.String, nullable=True)
+    comment_date = db.Column(db.DateTime)
+
+    user_fk = db.relationship(User)
+    post_fk = db.relationship(Post)
+
+
+
+# class Detachment(db.Model):
+#     __tablename__ = 'detachment'
+#     detachment_number = db.Column(db.Integer, db.ForeignKey('users.detachment'), nullable=False)
+#     detachment_name = db.Column(db.String)
+#     camp_flow = db.Column(db.Integer, nullable=False)

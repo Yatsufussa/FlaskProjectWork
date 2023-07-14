@@ -1,0 +1,6 @@
+flask
+flask_sqlalchemy
+psycopg2
+pydantic
+flask_restx
+aiogram
